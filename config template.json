@@ -1,0 +1,109 @@
+{
+    "usagePointId": "XXXXXXXXXXXXXX",
+    "timeZone": "Europe/Paris",
+
+    "consoAPI": {
+        "url": "https://conso.boris.sh/api/",
+        "from": "xxxxx@xxxxxxx.xxx",
+        "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        "MeasuresGroups": {
+            "hourly": {
+                "production": "production_load_curve",
+                "consommation": "consumption_load_curve",
+                "historyDeadline": {
+                    "type": "days",
+                    "value": 7
+                }
+            },
+            "daily": {
+                "production": "daily_production",
+                "consommation": "daily_consumption",
+                "consommationMaxPower": "consumption_max_power",
+                "historyDeadline": {
+                    "type": "months",
+                    "value": 36
+                }
+            }
+        },
+        "directSource": 1,        
+        "extrapoledSource": 4
+    },
+
+    "myelectricaldata": {
+        "url": "https://www.myelectricaldata.fr",
+        "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "MeasuresGroups": {
+            "hourly": {
+                "production": "production_load_curve",
+                "consommation": "consumption_load_curve",
+                "historyDeadline": {
+                    "type": "days",
+                    "value": 7
+                }
+            },
+            "daily": {
+                "production": "daily_production",
+                "consommation": "daily_consumption",
+                "consommationMaxPower": "daily_consumption_max_power",
+                "historyDeadline": {
+                    "type": "months",
+                    "value": 36
+                }
+            }
+        },
+        "directSource": 5,        
+        "extrapoledSource": 6
+    },
+
+    "enedisHistoricCsv": {
+        "hourly": "enedisHistoricHourly.csv",
+        "daily": "enedisHistoricDaily.csv",
+        "separator": ";",
+        "directSource": 2,        
+        "extrapoledSource": 3
+    },
+
+    "influxDb": {
+        "user": "admin",
+        "password": "xxxxxxxxxxxxx",
+        "host": "localhost",
+        "port": 8086,
+        "database": "enedis_db"
+    },
+
+    "HC_HP": [
+        {
+            "start_date": "2020-08-27",
+            "ident_fournisseur": "FC008124",
+            "ident_distributeur": "DI000001",
+            "label": "Sans différenciation temporelle",
+            "HC_HP_count": false
+        },
+        {
+            "start_date": "2021-10-14",
+            "ident_fournisseur": "FC000010",
+            "ident_distributeur": "DI000003",
+            "label": "Avec différenciation temporelle et saisonnière",
+            "HC_HP_count": true,
+            "HC_HP_active": false,
+            "HC": [
+                {"start": "01:10:00", "end": "07:40:00"},
+                {"start": "12:10:00", "end": "13:40:00"}
+            ],
+            "saison_pleine": [true, true, true, false, false, false, false, false, false, false, false, false]
+        },
+        {
+            "start_date": "2023-07-23",
+            "ident_fournisseur": "FC000040",
+            "ident_distributeur": "DI000003",
+            "label": "Avec différenciation temporelle et saisonnière",
+            "HC_HP_count": true,
+            "HC_HP_active": true,
+            "HC": [
+                {"start": "01:10:00", "end": "07:40:00"},
+                {"start": "12:10:00", "end": "13:40:00"}
+            ],
+            "saison_pleine": [true, true, true, false, false, false, false, false, false, false, false, false]
+        }            
+    ]
+}
