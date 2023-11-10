@@ -65,22 +65,23 @@
 
     "influxDb": {
         "user": "admin",
-        "password": "xxxxxxxxxxxxx",
+        "password": "M9mQLQS&4usr",
         "host": "localhost",
         "port": 8086,
-        "database": "enedis_db"
+        "enedis_database": "enedis_db",
+        "airzone_database": "airzone_db"
     },
 
     "HC_HP": [
         {
-            "start_date": "2020-08-27",
+            "start_date": "2020-08-27 00:00:00",
             "ident_fournisseur": "FC008124",
             "ident_distributeur": "DI000001",
             "label": "Sans différenciation temporelle",
             "HC_HP_count": false
         },
         {
-            "start_date": "2021-10-14",
+            "start_date": "2021-10-14 00:00:00",
             "ident_fournisseur": "FC000010",
             "ident_distributeur": "DI000003",
             "label": "Avec différenciation temporelle et saisonnière",
@@ -90,10 +91,10 @@
                 {"start": "01:10:00", "end": "07:40:00"},
                 {"start": "12:10:00", "end": "13:40:00"}
             ],
-            "saison_pleine": [true, true, true, false, false, false, false, false, false, false, false, false]
+            "saison_pleine": [true, true, true, false, false, false, false, false, false, false, true, true]
         },
         {
-            "start_date": "2023-07-23",
+            "start_date": "2023-07-23 00:00:00",
             "ident_fournisseur": "FC000040",
             "ident_distributeur": "DI000003",
             "label": "Avec différenciation temporelle et saisonnière",
@@ -103,7 +104,14 @@
                 {"start": "01:10:00", "end": "07:40:00"},
                 {"start": "12:10:00", "end": "13:40:00"}
             ],
-            "saison_pleine": [true, true, true, false, false, false, false, false, false, false, false, false]
+            "saison_pleine": [true, true, true, false, false, false, false, false, false, false, true, true]
         }            
-    ]
+    ],
+
+    "airzone": {
+        "api_url": "http://192.168.1.44:3000/api/v1/hvac?systemid=1&zoneid=",
+        "zones": [1, 2, 3, 4, 6],
+        "delta_min": 0.2,
+        "keys": ["name", "setpoint", "roomTemp", "humidity", "air_demand", "cold_demand", "heat_demand"]
+    }
 }
