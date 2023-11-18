@@ -30,6 +30,7 @@ def addMeasure(config, influx_db):
     keys = config['airzone']['keys']
 
     timestamp = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+    print("ts:", timestamp)
 
     points = []
 
@@ -40,7 +41,7 @@ def addMeasure(config, influx_db):
             demand = int(json_data['air_demand'] * 4 + json_data['cold_demand'] * 2 + json_data['heat_demand'] * 1)
             zone = json_data['name'].replace(" ", "_").replace(".", "")
             setpoint = int(json_data['setpoint'] * 10)
-            roomtemp = int(json_data['roomTemp'] * 10)
+            roomTemp = int(json_data['roomTemp'] * 10)
 
             query = "SELECT * FROM temp_sensors WHERE zone='" + zone + "' ORDER BY time DESC LIMIT 1"
             result = list(influx_db.getFromQuery(query).get_points())
@@ -48,7 +49,7 @@ def addMeasure(config, influx_db):
             if len(result) == 0 or \
                 demand != result[0]['demand'] or \
                 setpoint != result[0]['setpoint'] or \
-                abs(setpoint - result[0]['setpoint']) >= config['airzone']['delta_min']:
+                abs(roomTemp - result[0]['roomTemp']) >= config['airzone']['delta_min'] * 10:
 
                 if first:
                     writer = csv.DictWriter(f, fieldnames=json_data.keys())
@@ -63,12 +64,18 @@ def addMeasure(config, influx_db):
                     "fields": {
                         "demand": demand,
                         "setpoint": setpoint,
-                        "roomTemp": roomtemp
+                        "roomTemp": roomTemp
                     }
                 }
                 
                 points.append(point)
                 #print(point)
+            else:
+                print(zone)
+                print("New demand:", demand, "- Previous demand:", result[0]['demand'])
+                print("New setpoint:", setpoint, "- Previous setpoint:", result[0]['setpoint'])
+                print("New roomTemp:", roomTemp, "- Previous roomTemp:", result[0]['roomTemp'])
+
 
         if len(points) > 0:
             influx_db.writePoints(points)
@@ -82,9 +89,9 @@ def getLastPoint(config, influx_db):
 
 
 if __name__ == '__main__':
-
+    print(datetime.now())
     # Reading of config file
-    with open('config.json', 'r') as config_file:
+    with open('/home/florian/enedis/config.json', 'r') as config_file:
         config = json.load(config_file)
     
     influx_db = Influxdb(config, "airzone_database")
