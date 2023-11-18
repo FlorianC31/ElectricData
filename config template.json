@@ -1,8 +1,9 @@
 {
     "usagePointId": "XXXXXXXXXXXXXX",
     "timeZone": "Europe/Paris",
+    "enedisSource": "myelectricaldata",
 
-    "consoAPI": {
+    "consoBorisSh": {
         "url": "https://conso.boris.sh/api/",
         "from": "xxxxx@xxxxxxx.xxx",
         "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
@@ -10,19 +11,13 @@
             "hourly": {
                 "production": "production_load_curve",
                 "consommation": "consumption_load_curve",
-                "historyDeadline": {
-                    "type": "days",
-                    "value": 7
-                }
+                "historyDeadline": 7
             },
             "daily": {
                 "production": "daily_production",
                 "consommation": "daily_consumption",
                 "consommationMaxPower": "consumption_max_power",
-                "historyDeadline": {
-                    "type": "months",
-                    "value": 36
-                }
+                "historyDeadline": 1095
             }
         },
         "directSource": 1,        
@@ -30,25 +25,19 @@
     },
 
     "myelectricaldata": {
-        "url": "https://www.myelectricaldata.fr",
+        "url": "https://www.myelectricaldata.fr/",
         "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "MeasuresGroups": {
             "hourly": {
                 "production": "production_load_curve",
                 "consommation": "consumption_load_curve",
-                "historyDeadline": {
-                    "type": "days",
-                    "value": 7
-                }
+                "historyDeadline": 7
             },
             "daily": {
                 "production": "daily_production",
                 "consommation": "daily_consumption",
                 "consommationMaxPower": "daily_consumption_max_power",
-                "historyDeadline": {
-                    "type": "months",
-                    "value": 36
-                }
+                "historyDeadline": 1095
             }
         },
         "directSource": 5,        
@@ -69,7 +58,8 @@
         "host": "localhost",
         "port": 8086,
         "enedis_database": "enedis_db",
-        "airzone_database": "airzone_db"
+        "airzone_database": "airzone_db",
+        "ECS_database": "ecs_db"
     },
 
     "HC_HP": [
@@ -111,7 +101,7 @@
     "airzone": {
         "api_url": "http://192.168.1.44:3000/api/v1/hvac?systemid=1&zoneid=",
         "zones": [1, 2, 3, 4, 6],
-        "delta_min": 0.2,
+        "delta_min": 0.1,
         "keys": ["name", "setpoint", "roomTemp", "humidity", "air_demand", "cold_demand", "heat_demand"]
     }
 }
