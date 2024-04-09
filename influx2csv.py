@@ -24,4 +24,4 @@ def influx2csv(database):
             writer.writerows(measures)
 
 if __name__ == "__main__":
-    influx2csv("enedis_database")
+    influx2csv("database")

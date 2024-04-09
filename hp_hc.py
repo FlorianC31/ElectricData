@@ -83,18 +83,33 @@ class Hp_hc:
         return None
     
 
+    def isHp(self, timestamp):
+
+        period = self.getPeriodFromDate(timestamp)
+        if period is None:
+            return True
+
+        if not period['HC_HP_count']:
+            return True
+        for hc in period['HC']:
+            if (timestamp.time() >= hc["start"].time() and timestamp.time() < hc["end"].time()):
+                return False
+            
+        return True
+
+
 if __name__ == "__main__":
     with open('config.json', 'r') as config_file:
         config = json.load(config_file)
 
     hp_hc = Hp_hc(config)
 
-    timestamp = timeStamp.getTimestampFromStr("2021-10-13 20:00:00 ", "Europe/Paris", "Europe/Paris")
-
-    for i in range(0, 50):
-        period = hp_hc.getPeriodFromDate(timestamp)
-        print(timestamp, period['start_date'])
-        timestamp += timedelta(minutes = 30)
+    #timestamp = timeStamp.getTimestampFromStr("2021-10-13 20:00:00 ", "Europe/Paris", "Europe/Paris")
+#
+    #for i in range(0, 50):
+    #    period = hp_hc.getPeriodFromDate(timestamp)
+    #    print(timestamp, period['start_date'])
+    #    timestamp += timedelta(minutes = 30)
 
 
 
@@ -104,5 +119,15 @@ if __name__ == "__main__":
     #timestamp = timeStamp.getTimestampFromStr("2023-11-17 00:00:00")
     #print("timestamp:", timestamp.date())
     #
-    #local_timestamp = timeStamp.getTimestampFromStr("2023-11-17 00:00:00", "Europe/Paris", "Europe/Paris")
-    #print("local_timestamp:", local_timestamp.date())
+    local_timestamp = timeStamp.getTimestampFromStr("2023-06-17 00:00:00", "Europe/Paris", "Europe/Paris")
+    print(local_timestamp, hp_hc.isHp(local_timestamp))
+    local_timestamp = timeStamp.getTimestampFromStr("2023-06-17 02:00:00", "Europe/Paris", "Europe/Paris")
+    print(local_timestamp, hp_hc.isHp(local_timestamp))
+    local_timestamp = timeStamp.getTimestampFromStr("2023-06-17 08:00:00", "Europe/Paris", "Europe/Paris")
+    print(local_timestamp, hp_hc.isHp(local_timestamp))
+    local_timestamp = timeStamp.getTimestampFromStr("2023-06-17 13:00:00", "Europe/Paris", "Europe/Paris")
+    print(local_timestamp, hp_hc.isHp(local_timestamp))
+    local_timestamp = timeStamp.getTimestampFromStr("2023-06-17 14:00:00", "Europe/Paris", "Europe/Paris")
+    print(local_timestamp, hp_hc.isHp(local_timestamp))
+    local_timestamp = timeStamp.getTimestampFromStr("2017-06-17 02:00:00", "Europe/Paris", "Europe/Paris")
+    print(local_timestamp, hp_hc.isHp(local_timestamp))

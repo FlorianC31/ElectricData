@@ -12,14 +12,14 @@ def checkProduction():
 
     influx_db = Influxdb(config)
 
-    daily_points = influx_db.getFromQuery("SELECT * FROM daily_production").get_points()
+    daily_points = influx_db.getFromQuery("SELECT * FROM ENEDIS_daily_production").get_points()
 
     nb_points = 0
 
     for daily_point in daily_points:
         date = timeStamp.getTimestampFromStr(daily_point['time'], "utc", config['timeZone'])
         date = date.date().strftime('%Y-%m-%d')
-        hourly_points = influx_db.getFromQuery("SELECT * FROM hourly_production WHERE date='" + date + "'").get_points()
+        hourly_points = influx_db.getFromQuery("SELECT * FROM ENEDIS_hourly_production WHERE date='" + date + "'").get_points()
 
         daily_value = daily_point['value']
         sum_hourly_value = 0
@@ -59,8 +59,8 @@ def checkConsommation():
     for daily_point in daily_points:
         date = timeStamp.getTimestampFromStr(daily_point['time'], "utc", config['timeZone'])
         date_str = date.date().strftime('%Y-%m-%d')
-        hourly_points = influx_db.getFromQuery("SELECT * FROM hourly_consommation WHERE date='" + date_str + "'").get_points()
-        #print("SELECT * FROM hourly_consommation WHERE date='" + date_str + "'")
+        hourly_points = influx_db.getFromQuery("SELECT * FROM ENEDIS_hourly_consommation WHERE date='" + date_str + "'").get_points()
+        #print("SELECT * FROM ENEDIS_hourly_consommation WHERE date='" + date_str + "'")
 
 
         daily_value_hp = int(daily_point['basse_hp'] + daily_point['pleine_hp'])
@@ -135,8 +135,8 @@ def extrapoleConsommationDay(timestamp_str, coeff_hc, coeff_hp):
     
     influx_db = Influxdb(config)
 
-    print("SELECT * FROM hourly_consommation WHERE date='" + date_str + "'")
-    hourly_points = influx_db.getFromQuery("SELECT * FROM hourly_consommation WHERE date='" + date_str + "'").get_points()
+    print("SELECT * FROM ENEDIS_hourly_consommation WHERE date='" + date_str + "'")
+    hourly_points = influx_db.getFromQuery("SELECT * FROM ENEDIS_hourly_consommation WHERE date='" + date_str + "'").get_points()
     for hourly_point in hourly_points:
         if isSaisonPleine:
             pleine_hp += hourly_point['HP_value']

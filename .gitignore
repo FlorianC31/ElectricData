@@ -1,7 +1,12 @@
 __pycache__
 *.csv
-config.json
+*.json
+!configTemplate.json
 relayECS.log
 PCA9536_R21.py
 .gitignore
 relay.py
+*.xls
+*.log
+ecuAPI.py
+misc/*

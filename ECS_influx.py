@@ -8,12 +8,12 @@ import timeStamp
 
 if __name__ == '__main__':
 
-    with open('config.json', 'r') as config_file:
+    with open('/home/florian/enedis/config.json', 'r') as config_file:
         config = json.load(config_file)
 
     # Spécifiez le chemin du répertoire contenant les fichiers CSV
     repertoire = '/media/Flo-Pictures/home/Dev/ECS'
-    influx_db = Influxdb(config, "ECS_database")
+    influx_db = Influxdb(config, "database")
 
     # Boucle sur tous les fichiers du répertoire
     for fichier in os.listdir(repertoire):

@@ -19,7 +19,7 @@ class EnedisApi:
         self.json_data = {}
         self.hp_hc = Hp_hc(config)
 
-        self.influx_db = Influxdb(config, "enedis_database")
+        self.influx_db = Influxdb(config, "database")
 
         if self.enedis_source == "consoBorisSh":
             self.headers = {
@@ -136,10 +136,10 @@ class EnedisApi:
                 if (measure == "consommation"):
                     hour_hc_ratio = self.hp_hc.getHourHcRatio(local_timestamp, interval)
                     point['tags']['saison_pleine'] = self.hp_hc.isSaisonPleine(utc_timestamp)
-                    point['fields']['HC_value'] = int(int(reading['value']) * hour_hc_ratio) / 60 * interval
-                    point['fields']['HP_value'] = int(int(reading['value']) * (1 - hour_hc_ratio)) / 60 * interval
+                    point['fields']['HC_value'] = int(round(int(reading['value']) * hour_hc_ratio / 60 * interval, 0))
+                    point['fields']['HP_value'] = int(round(int(reading['value']) * (1 - hour_hc_ratio) / 60 * interval, 0))
                 else:
-                    point['fields']['value'] = int(reading['value']) / 60 * interval
+                    point['fields']['value'] = int(round(int(reading['value']) / 60 * interval, 0))
         
                 points.append(point)
 
@@ -186,8 +186,8 @@ class EnedisApi:
                     else:
                         saison = "basse"
                         not_saison = "pleine"
-                    point['fields'][saison + '_hc'] = int(int(reading['value']) * day_hc_ratio)
-                    point['fields'][saison + '_hp'] = int(int(reading['value']) * (1 - day_hc_ratio))
+                    point['fields'][saison + '_hc'] = int(round(int(reading['value']) * day_hc_ratio, 0))
+                    point['fields'][saison + '_hp'] = int(round(int(reading['value']) * (1 - day_hc_ratio), 0))
                     point['fields'][not_saison + '_hc'] = 0
                     point['fields'][not_saison + '_hp'] = 0
                 else:
@@ -206,7 +206,7 @@ class EnedisApi:
             return 0.0
 
         start_day_ts = end_day_ts - timedelta(days = 1)
-        query = f"SELECT SUM(HC_value), SUM(HP_value) FROM hourly_consommation WHERE time > '" + timeStamp.timestamp2str(start_day_ts) + "' AND time <= '" + timeStamp.timestamp2str(end_day_ts) + "'"
+        query = f"SELECT SUM(HC_value), SUM(HP_value) FROM ENEDIS_hourly_consommation WHERE time > '" + timeStamp.timestamp2str(start_day_ts) + "' AND time <= '" + timeStamp.timestamp2str(end_day_ts) + "'"
         try:
             result = self.influx_db.query(query)[0]
             sum_hc = result['sum']
@@ -220,7 +220,7 @@ class EnedisData:
     def __init__(self, config):
         self.config = config
         self.points = []        
-        self.influx_db = Influxdb(config, "enedis_database")
+        self.influx_db = Influxdb(config, "database")
 
     def addHourlyPoint(self, measurement, enedis_timestamp, value, sourceType, interval, hp_hc):
         utc_timestamp = timeStamp.getTimestampFromStr(enedis_timestamp, config['timeZone'], "utc")
@@ -246,12 +246,12 @@ class EnedisData:
         }
         
         if(hp_hc == None):
-            point['fields']['value'] = int(value / 60 * interval)
+            point['fields']['value'] = int(round(value / 60 * interval, 0))
         else:
             HC_ratio = hp_hc.getHourHcRatio(local_timestamp, interval)
             point['tags']['saison_pleine'] = hp_hc.isSaisonPleine(local_timestamp)
-            point['fields']['HC_value'] = int(value / 60 * interval * HC_ratio)
-            point['fields']['HP_value'] = int(value / 60 * interval * (1 - HC_ratio))
+            point['fields']['HC_value'] = int(round(int(value) / 60 * interval * HC_ratio, 0))
+            point['fields']['HP_value'] = int(round(int(value) / 60 * interval * (1 - HC_ratio), 0))
         point['fields']['interval_length'] = int(interval)
         if not isinstance(int(interval), int):
             print(local_timestamp, interval, int(interval), isinstance(int(interval), int))
@@ -273,7 +273,7 @@ class EnedisData:
             "fields": {}
         }
 
-        if measurement == "daily_consommation":
+        if measurement == "ENEDIS_daily_consommation":
             point['fields']['basse_hc'] = basse_hc
             point['fields']['basse_hp'] = basse_hp
             point['fields']['pleine_hc'] = pleine_hc
@@ -317,9 +317,9 @@ def enedisHistoricHourlyCsv(config):
 
         row_data = row.split(config['enedisHistoricCsv']['separator'])
 
-        enedis_Data.addHourlyPoint("hourly_consommation", row_data[0], int(row_data[1]), row_data[2], int(row_data[5]), hp_hc)
+        enedis_Data.addHourlyPoint("ENEDIS_hourly_consommation", row_data[0], int(row_data[1]), row_data[2], int(row_data[5]), hp_hc)
         if (row_data[3] != "" ):
-            enedis_Data.addHourlyPoint("hourly_production", row_data[0], int(row_data[3]), row_data[4], int(row_data[5]), None)
+            enedis_Data.addHourlyPoint("ENEDIS_hourly_production", row_data[0], int(row_data[3]), row_data[4], int(row_data[5]), None)
     enedis_Data.insertIntoInflux()
         
 
@@ -338,9 +338,9 @@ def enedisHistoricDailyCsv(config):
 
         row_data = row.split(config['enedisHistoricCsv']['separator'])
 
-        enedis_Data.addDailyPoint("daily_consommation", row_data[0], int(row_data[2]), int(row_data[3]), int(row_data[4]), int(row_data[5]))
+        enedis_Data.addDailyPoint("ENEDIS_daily_consommation", row_data[0], int(row_data[2]), int(row_data[3]), int(row_data[4]), int(row_data[5]))
         if (row_data[1] != "" ):
-            enedis_Data.addDailyPoint("daily_production", row_data[0], int(row_data[1]))
+            enedis_Data.addDailyPoint("ENEDIS_daily_production", row_data[0], int(row_data[1]))
     enedis_Data.insertIntoInflux()
 
 
@@ -353,7 +353,7 @@ if __name__ == '__main__':
 
     enedis_Data = EnedisData(config)
     
-    #enedis_Data.clearAllTables()
+    enedis_Data.clearAllTables()
 
     enedisHistoricHourlyCsv(config)
     enedisHistoricDailyCsv(config)
@@ -365,5 +365,5 @@ if __name__ == '__main__':
     enedis_Api.getDailyData("consommation")
     enedis_Api.getDailyData("production")
 
-    #influx2csv("enedis_database")
+    #influx2csv("database")
     #checkEnedisData()

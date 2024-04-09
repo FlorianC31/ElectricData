@@ -14,14 +14,14 @@ def checkEnedisData():
         config = json.load(config_file)
 
     hp_hc = Hp_hc(config)
-    influx_db = Influxdb(config, "enedis_database")
-    result = influx_db.query("SELECT * FROM hourly_consommation ORDER BY time ASC LIMIT 1")
+    influx_db = Influxdb(config, "database")
+    result = influx_db.query("SELECT * FROM ENEDIS_hourly_consommation ORDER BY time ASC LIMIT 1")
     start_day_ts = parse(result[0]['time'])
     end_day_ts = start_day_ts + timedelta(days = 1)
 
     while end_day_ts.date() != datetime.now().date():
 
-        query = f"SELECT SUM(HC_value), SUM(HP_value) FROM hourly_consommation WHERE time >= '" + timeStamp.timestamp2str(start_day_ts) + "' AND time < '" + timeStamp.timestamp2str(end_day_ts) + "'"
+        query = f"SELECT SUM(HC_value), SUM(HP_value) FROM ENEDIS_hourly_consommation WHERE time >= '" + timeStamp.timestamp2str(start_day_ts) + "' AND time < '" + timeStamp.timestamp2str(end_day_ts) + "'"
         hourly_result = influx_db.query(query)
         if len(hourly_result) == 0:
             hourly_hc = 0
@@ -30,7 +30,7 @@ def checkEnedisData():
             hourly_hc = hourly_result[0]['sum']
             hourly_hp = hourly_result[0]['sum_1']
 
-        query = f"SELECT * FROM daily_consommation WHERE time >= '" + timeStamp.timestamp2str(start_day_ts) + "' AND time < '" + timeStamp.timestamp2str(end_day_ts) + "'"
+        query = f"SELECT * FROM ENEDIS_daily_consommation WHERE time >= '" + timeStamp.timestamp2str(start_day_ts) + "' AND time < '" + timeStamp.timestamp2str(end_day_ts) + "'"
         daily_result = influx_db.query(query)
 
         if len(daily_result) == 0:

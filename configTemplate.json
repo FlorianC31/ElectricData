@@ -53,13 +53,11 @@
     },
 
     "influxDb": {
-        "user": "admin",
-        "password": "M9mQLQS&4usr",
+        "user": "xxxxxx",
+        "password": "xxxxxxxxxxx",
         "host": "localhost",
         "port": 8086,
-        "enedis_database": "enedis_db",
-        "airzone_database": "airzone_db",
-        "ECS_database": "ecs_db"
+        "database": "energy_db"
     },
 
     "HC_HP": [
@@ -99,9 +97,20 @@
     ],
 
     "airzone": {
-        "api_url": "http://192.168.1.44:3000/api/v1/hvac?systemid=1&zoneid=",
+        "api_url": "http://192.168.1.44:3000/api/v1/hvac",
         "zones": [1, 2, 3, 4, 6],
         "delta_min": 0.1,
         "keys": ["name", "setpoint", "roomTemp", "humidity", "air_demand", "cold_demand", "heat_demand"]
+    },
+
+    "apsystems": {
+        "inverters_id": [703000867975, 703000866799, 703000868385, 703000868246, 703000868061],
+        "inverter_url": "http://192.168.1.33/index.php/hidden/exec_export_file",
+        "power_url": "http://192.168.1.33/index.php/meter/old_meter_power_graph"
+    },
+
+    "ecs": {
+        "threshold_on": -2000,
+        "threshold_off": 300
     }
 }
