@@ -93,6 +93,7 @@ class Hp_hc:
             return True
         for hc in period['HC']:
             if (timestamp.time() >= hc["start"].time() and timestamp.time() < hc["end"].time()):
+                print(hc["start"].time(), timestamp.time(), hc["end"].time())
                 return False
             
         return True

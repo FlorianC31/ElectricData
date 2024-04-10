@@ -122,21 +122,27 @@ class EcuData:
         """
         point = self.influx_db.getLastPoint("ECU_power")
         timestamp = timeStamp.getCurrentTimestamp(self.timeZone)
+        local_timestamp = timeStamp.changeTimeZone(timestamp, self.timeZone)
 
         if (timestamp - point["time"] <= timedelta(minutes=5)):
             
             ecs_current_state = self.influx_db.getLastPoint("ECS_relay")["active"]
             hchp_current_state = self.influx_db.getLastPoint("ENEDIS_hphc")["hp"]
+
+            if self.hp_hc.isHp(local_timestamp):
+                print("New hphc: heures pleines")
+            else:                
+                print("New hphc: heures creuses")
             
             if hchp_current_state == HP:     # Current state : Heures pleines
-                if not self.hp_hc.isHp(timestamp):
+                if not self.hp_hc.isHp(local_timestamp):
                     hchp_current_state = HC
                     self.addHpHcPoint(timestamp, HC)     # Switching to heures creuses
                     self.setRelayPoint(timestamp, ON)    # turning on ECS
                     
             
             elif hchp_current_state == HC:                           # Current state : heures creuses
-                if self.hp_hc.isHp(timestamp):
+                if self.hp_hc.isHp(local_timestamp):
                     hchp_current_state = HP
                     self.addHpHcPoint(timestamp, HP)     # Switching to heures pleines
 
@@ -147,11 +153,17 @@ class EcuData:
 
             if hchp_current_state == HP:     # If the new state is heures pleines
                 print("Heures Pleines")
+
+                if ecs_current_state == ON:
+                    print("ecs_current_state == ON")
+                else:
+                    print("ecs_current_state == OFF")
+
+                print(self.ecs_threshold_off, point['enedis'], self.ecs_threshold_on)
                 
                 # If the ECS is on and the enedis power is lower to threshold_off, then turn off the ECS
                 if ecs_current_state == ON and (point['enedis'] > self.ecs_threshold_off):
-                    self.setRelayPoint(timestamp, OFF)    # turning off ECS
-                        
+                    self.setRelayPoint(timestamp, OFF)    # turning off ECS                        
                 
                 # If the ECS is onf and the enedis power is lower to threshold_off, then turn off the ECS
                 if ecs_current_state == OFF and (point['enedis'] < self.ecs_threshold_on):
@@ -228,4 +240,8 @@ if __name__ == "__main__":
     #ecuData.addHpHcPoint(timeStamp.getTimestampFromStr("2024-04-09 07:40:00", config["timeZone"]), HP)
     #ecuData.addHpHcPoint(timeStamp.getTimestampFromStr("2024-04-09 12:10:00", config["timeZone"]), HC)
     #ecuData.addHpHcPoint(timeStamp.getTimestampFromStr("2024-04-09 13:40:00", config["timeZone"]), HP)
+    #ecuData.addHpHcPoint(timeStamp.getTimestampFromStr("2024-04-10 01:10:00", config["timeZone"]), HC)
+    #ecuData.addHpHcPoint(timeStamp.getTimestampFromStr("2024-04-10 07:40:00", config["timeZone"]), HP)
+
+    #ecuData.setRelayPoint(timeStamp.getTimestampFromStr("2024-04-10 07:40:00", config["timeZone"]), OFF)
     
