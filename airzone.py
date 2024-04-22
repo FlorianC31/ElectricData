@@ -128,7 +128,7 @@ if __name__ == '__main__':
     with open('/home/florian/enedis/config.json', 'r') as config_file:
         config = json.load(config_file)
     
-    influx_db = Influxdb(config, "database")
+    influx_db = Influxdb(config)
 
     #influx_db.clearAllTables()
 

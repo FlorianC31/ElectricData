@@ -14,7 +14,7 @@ def checkEnedisData():
         config = json.load(config_file)
 
     hp_hc = Hp_hc(config)
-    influx_db = Influxdb(config, "database")
+    influx_db = Influxdb(config)
     result = influx_db.query("SELECT * FROM ENEDIS_hourly_consommation ORDER BY time ASC LIMIT 1")
     start_day_ts = parse(result[0]['time'])
     end_day_ts = start_day_ts + timedelta(days = 1)

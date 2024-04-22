@@ -8,8 +8,6 @@ Date Created: 2024-04-09
 
 import requests
 import json
-import pandas as pd
-from bs4 import BeautifulSoup
 from influxInterface import Influxdb
 import timeStamp
 from datetime import datetime, timedelta
@@ -31,8 +29,7 @@ class EcuData:
         self.timeZone = config["timeZone"]
         self.ecs_threshold_on = config["ecs"]["threshold_on"]
         self.ecs_threshold_off = config["ecs"]["threshold_off"]
-        #self.influx_db = Influxdb(config, "database")
-        self.influx_db = Influxdb(config, "database")
+        self.influx_db = Influxdb(config)
         self.points = []
         self.hp_hc = Hp_hc(config)
         self.ecs_relay = EcsRelay()

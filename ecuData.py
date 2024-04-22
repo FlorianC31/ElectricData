@@ -10,7 +10,7 @@ class EcuData:
     def __init__(self, config):
         self.config = config["apsystems"]
         self.timeZone = config["timeZone"]
-        self.influx_db = Influxdb(config, "database")
+        self.influx_db = Influxdb(config)
         self.panelsId = {}
         self.lastTimestamp = None
         self.voltage = 0

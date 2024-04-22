@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     # Spécifiez le chemin du répertoire contenant les fichiers CSV
     repertoire = '/media/Flo-Pictures/home/Dev/ECS'
-    influx_db = Influxdb(config, "database")
+    influx_db = Influxdb(config)
 
     # Boucle sur tous les fichiers du répertoire
     for fichier in os.listdir(repertoire):

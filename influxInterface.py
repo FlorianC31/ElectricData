@@ -12,7 +12,7 @@ import timeStamp
 class Influxdb:
     """This class contains functions for influx database interface
     """
-    def __init__(self, config, database):
+    def __init__(self, config):
         """Create a new influxdb interface
 
         Args:
@@ -23,8 +23,8 @@ class Influxdb:
                                               port=config['influxDb']['port'], 
                                               username=config['influxDb']['user'], 
                                               password=config['influxDb']['password'], 
-                                              database=config['influxDb'][database])
-        self.database = config['influxDb'][database]
+                                              database=config['influxDb']['database'])
+        self.database = config['influxDb']['database']
     
     
     def writePoints(self, points):

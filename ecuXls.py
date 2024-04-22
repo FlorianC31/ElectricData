@@ -19,7 +19,7 @@ lastDate_TS = datetime.strptime(lastDay, '%Y-%m-%d')
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
-influx_db = Influxdb(config, "database")
+influx_db = Influxdb(config)
 
 while (date_TS != lastDate_TS):
     chemin_fichier = os.path.expanduser(os.path.join(chemin_dossier, fichier_prefixe + date_TS.strftime("%Y-%m-%d") + ".xls"))

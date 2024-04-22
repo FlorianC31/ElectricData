@@ -19,7 +19,7 @@ class EnedisApi:
         self.json_data = {}
         self.hp_hc = Hp_hc(config)
 
-        self.influx_db = Influxdb(config, "database")
+        self.influx_db = Influxdb(config)
 
         if self.enedis_source == "consoBorisSh":
             self.headers = {
@@ -220,7 +220,7 @@ class EnedisData:
     def __init__(self, config):
         self.config = config
         self.points = []        
-        self.influx_db = Influxdb(config, "database")
+        self.influx_db = Influxdb(config)
 
     def addHourlyPoint(self, measurement, enedis_timestamp, value, sourceType, interval, hp_hc):
         utc_timestamp = timeStamp.getTimestampFromStr(enedis_timestamp, config['timeZone'], "utc")
