@@ -135,7 +135,8 @@ class EcuData:
                 if not self.hp_hc.isHp(local_timestamp):
                     hchp_current_state = HC
                     self.addHpHcPoint(timestamp, HC)     # Switching to heures creuses
-                    self.setRelayPoint(timestamp, ON)    # turning on ECS
+                    if local_timestamp.strftime("%H") < 10:     # Disable the ECS at night 
+                        self.setRelayPoint(timestamp, ON)    # turning on ECS
                     
             
             elif hchp_current_state == HC:                           # Current state : heures creuses
@@ -158,11 +159,11 @@ class EcuData:
 
                 print(self.ecs_threshold_off, point['enedis'], self.ecs_threshold_on)
                 
-                # If the ECS is on and the enedis power is lower to threshold_off, then turn off the ECS
+                # If the ECS is on and the enedis power is higher to threshold_off, then turn off the ECS
                 if ecs_current_state == ON and (point['enedis'] > self.ecs_threshold_off):
                     self.setRelayPoint(timestamp, OFF)    # turning off ECS                        
                 
-                # If the ECS is onf and the enedis power is lower to threshold_off, then turn off the ECS
+                # If the ECS is off and the enedis power is lower to threshold_off, then turn on the ECS
                 if ecs_current_state == OFF and (point['enedis'] < self.ecs_threshold_on):
                     self.setRelayPoint(timestamp, ON)    # turning on ECS
             else:
