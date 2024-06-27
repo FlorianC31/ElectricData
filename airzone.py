@@ -69,7 +69,7 @@ def addMeasure(config, influx_db):
                 setpoint = int(json_data['setpoint'] * 10)
                 roomTemp = int(json_data['roomTemp'] * 10)
                 
-                if (zone_id == 4 and setpoint > 195):
+                if (zone_id == 4 and demand == 5 and setpoint > 195):
                     setTemperature(api_url, zone_id, 15.0)
                     sendNotif("Bureau en surchauffe", "La consigne de température du bureau est de " + str(setpoint / 10), "")
                     with open("airzoneJournal.log", "a") as log:
